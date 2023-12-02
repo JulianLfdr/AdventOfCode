@@ -3,31 +3,31 @@ using System.Text.RegularExpressions;
 
 namespace Day01;
 
-public class Solver : Solver<CalibrationDocument, long>
+public class Solver : Solver<CalibrationDocument, int>
 {
     public Solver() : base("./input.txt")
     {
     }
 
-    public override long PartOne(CalibrationDocument calibrationDocument)
+    public override int PartOne(CalibrationDocument calibrationDocument)
     {
         return calibrationDocument.CalibrationValues
             .Select(v =>
             {
                 var digits = v.Where(char.IsDigit);
-                return long.Parse($"{digits.FirstOrDefault()}{digits.LastOrDefault()}");
+                return int.Parse($"{digits.FirstOrDefault()}{digits.LastOrDefault()}");
             }).Sum();
     }
 
-    public override long PartTwo(CalibrationDocument calibrationDocument)
+    public override int PartTwo(CalibrationDocument calibrationDocument)
     {
         return calibrationDocument.CalibrationValues
             .Select(RecoverCalibrationValue)
             .Sum();
 
-        long RecoverCalibrationValue(string calibrationValue)
+        int RecoverCalibrationValue(string calibrationValue)
         {
-            return long.Parse($"{FindFirstDigit(calibrationValue)}{FindFirstDigit(calibrationValue, RegexOptions.RightToLeft)}");
+            return int.Parse($"{FindFirstDigit(calibrationValue)}{FindFirstDigit(calibrationValue, RegexOptions.RightToLeft)}");
         };
 
         string FindFirstDigit(string calibrationValue, RegexOptions regexOptions = RegexOptions.None)
