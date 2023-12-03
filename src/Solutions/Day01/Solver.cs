@@ -5,9 +5,7 @@ namespace Day01;
 
 public class Solver : Solver<CalibrationDocument, int>
 {
-    public Solver() : base("./input.txt")
-    {
-    }
+    public Solver() : base("./input.txt") { }
 
     public override int PartOne(CalibrationDocument calibrationDocument)
     {

@@ -4,30 +4,29 @@ using System.Text;
 
 namespace Day03;
 
-public class Solver : Solver<char[,], int>
+public class Solver : Solver<List<SurroundingCheckResult>, int>
 {
-    public Solver() : base("./input.txt")
+    public Solver() : base("./input.txt") { }
+
+    public override int PartOne(List<SurroundingCheckResult> surroundingCheckResults)
     {
+        return surroundingCheckResults.Sum(r => r.Number);
     }
 
-    public override int PartOne(char[,] engineSchematicGrid)
+    public override int PartTwo(List<SurroundingCheckResult> surroundingCheckResults)
     {
-        return GetSurroundingCheckResults(engineSchematicGrid).Sum(r => r.Number);
-    }
-
-    public override int PartTwo(char[,] engineSchematicGrid)
-    {
-        return GetSurroundingCheckResults(engineSchematicGrid)
+        return surroundingCheckResults
             .Where(r => r.SurroundingCharacter == '*')
             .GroupBy(r => r.SurroundingCharacterLocation)
             .Where(g => g.Count() == 2)
-            .Select(g => g.Aggregate(1, (accumulator, checkResult) => accumulator * checkResult.Number))
+            .Select(g => g.Aggregate(seed: 1, (accumulator, checkResult) => accumulator * checkResult.Number))
             .Sum();
     }
 
-    public override char[,] ParseInput(IEnumerable<string> engineSchematic)
+    public override List<SurroundingCheckResult> ParseInput(IEnumerable<string> engineSchematic)
     {
-        return GetEngineSchematicGrid(engineSchematic);
+        char[,] engineSchematicGrid = GetEngineSchematicGrid(engineSchematic);
+        return GetSurroundingCheckResults(engineSchematicGrid);
 
         static char[,] GetEngineSchematicGrid(IEnumerable<string> engineSchematic)
         {
@@ -48,132 +47,132 @@ public class Solver : Solver<char[,], int>
 
             return grid;
         }
-    }
 
-    private static List<SurroundingCheckResult> GetSurroundingCheckResults(char[,] engineSchematicGrid)
-    {
-        List<SurroundingCheckResult> surroundingCheckResults = [];
-
-        int rowCount = engineSchematicGrid.GetLength(0) - 1;
-        int columnCount = engineSchematicGrid.GetLength(1) - 1;
-
-        for (int rowId = 0; rowId <= rowCount; rowId++)
+        static List<SurroundingCheckResult> GetSurroundingCheckResults(char[,] engineSchematicGrid)
         {
-            for (int columnId = 0; columnId <= columnCount; columnId++)
+            List<SurroundingCheckResult> surroundingCheckResults = [];
+
+            int rowCount = engineSchematicGrid.GetLength(0) - 1;
+            int columnCount = engineSchematicGrid.GetLength(1) - 1;
+
+            for (int rowId = 0; rowId <= rowCount; rowId++)
             {
-                char currentChar = engineSchematicGrid[rowId, columnId];
-                if (char.IsDigit(currentChar))
+                for (int columnId = 0; columnId <= columnCount; columnId++)
                 {
-                    var checkResult = CheckCurrentDigitSurroundingsForSpecialCharacters(engineSchematicGrid, rowId, columnId, rowCount, columnCount);
-                    if (checkResult.IsAdjacentToSpecialCharacter)
+                    char currentChar = engineSchematicGrid[rowId, columnId];
+                    if (char.IsDigit(currentChar))
                     {
-                        // In case multiple digits follows each other,
-                        // the returned number will be all digits combined
-                        surroundingCheckResults.Add(checkResult);
-
-                        // In case multiple digits follows each other,
-                        // set the current column to the one of the last digit
-                        columnId = checkResult.LastDigitColumnId;
-                    }
-                }
-            }
-        }
-
-        return surroundingCheckResults;
-
-        static SurroundingCheckResult CheckCurrentDigitSurroundingsForSpecialCharacters(char[,] grid, int currentDigitRowId, int currentDigitColumnId, int rowCount, int columnCount)
-        {
-            int firstRowToCheck = DetermineFirstRowOrColumnToCheck(currentDigitRowId);
-            int lastRowToCheck = DetermineLastRowToCheck(currentDigitRowId, rowCount);
-
-            int firstColumnToCheck = DetermineFirstRowOrColumnToCheck(currentDigitColumnId);
-            int lastColumnToCheck = DetermineLastColumnToCheck(grid, currentDigitRowId, currentDigitColumnId, columnCount);
-
-            for (int rowId = firstRowToCheck; rowId <= lastRowToCheck; rowId++)
-            {
-                for (int columnId = firstColumnToCheck; columnId <= lastColumnToCheck; columnId++)
-                {
-                    char currentChar = grid[rowId, columnId];
-
-                    if (IsSpecialCharacter(currentChar))
-                    {
-                        string number = ExtractNumber(grid, currentDigitRowId, currentDigitColumnId, lastColumnToCheck);
-
-                        return new SurroundingCheckResult
+                        var checkResult = CheckCurrentDigitSurroundingsForSpecialCharacters(engineSchematicGrid, rowId, columnId, rowCount, columnCount);
+                        if (checkResult.IsAdjacentToSpecialCharacter)
                         {
-                            Number = int.Parse(number),
-                            IsAdjacentToSpecialCharacter = true,
-                            LastDigitColumnId = currentDigitColumnId + number.Length,
-                            SurroundingCharacter = currentChar,
-                            SurroundingCharacterLocation = new(rowId, columnId)
-                        };
+                            // In case multiple digits follows each other,
+                            // the returned number will be all digits combined
+                            surroundingCheckResults.Add(checkResult);
+
+                            // In case multiple digits follows each other,
+                            // set the current column to the one of the last digit
+                            columnId = checkResult.LastDigitColumnId;
+                        }
                     }
                 }
             }
 
-            return new SurroundingCheckResult
+            return surroundingCheckResults;
+
+            static SurroundingCheckResult CheckCurrentDigitSurroundingsForSpecialCharacters(char[,] grid, int currentDigitRowId, int currentDigitColumnId, int rowCount, int columnCount)
             {
-                IsAdjacentToSpecialCharacter = false
-            };
-        }
+                int firstRowToCheck = DetermineFirstRowOrColumnToCheck(currentDigitRowId);
+                int lastRowToCheck = DetermineLastRowToCheck(currentDigitRowId, rowCount);
 
-        /// <summary>
-        /// Determine the first row or column to be checked.
-        /// </summary>
-        /// <remarks>
-        /// Will be the row above except if current row is the first one.
-        /// Will be the column before except if current column is the last one.
-        /// </remarks>
-        static int DetermineFirstRowOrColumnToCheck(int currentDigitRowId) => currentDigitRowId == 0 ? 0 : currentDigitRowId - 1;
+                int firstColumnToCheck = DetermineFirstRowOrColumnToCheck(currentDigitColumnId);
+                int lastColumnToCheck = DetermineLastColumnToCheck(grid, currentDigitRowId, currentDigitColumnId, columnCount);
 
-        /// <summary>
-        /// Determine the last row to be checked.
-        /// </summary>
-        /// <remarks>
-        /// Will be the row bellow except if current row is the last one.
-        /// </remarks>
-        static int DetermineLastRowToCheck(int currentDigitColumnId, int columnCount) => currentDigitColumnId == columnCount ? columnCount : currentDigitColumnId + 1;
-
-        /// <summary>
-        /// Determine the last column to be checked.
-        /// </summary>
-        /// <remarks>
-        /// Will be the column after if current column is the last one.
-        /// Otherwise, if next column is a digit, will be the last adjacent digit column.
-        /// </remarks>
-        static int DetermineLastColumnToCheck(char[,] grid, int currentDigitRowId, int currentDigitColumnId, int columnCount)
-        {
-            // The next or current column
-            int nextColumnId = currentDigitColumnId == columnCount ? columnCount : currentDigitColumnId + 1;
-
-            // Find digit chain last column, if any
-            char nextChar = grid[currentDigitRowId, nextColumnId];
-            while (char.IsDigit(nextChar))
-            {
-                if (nextColumnId == columnCount)
+                for (int rowId = firstRowToCheck; rowId <= lastRowToCheck; rowId++)
                 {
-                    break;
+                    for (int columnId = firstColumnToCheck; columnId <= lastColumnToCheck; columnId++)
+                    {
+                        char currentChar = grid[rowId, columnId];
+
+                        if (IsSpecialCharacter(currentChar))
+                        {
+                            string number = ExtractNumber(grid, currentDigitRowId, currentDigitColumnId, lastColumnToCheck);
+
+                            return new SurroundingCheckResult
+                            {
+                                Number = int.Parse(number),
+                                LastDigitColumnId = currentDigitColumnId + number.Length,
+                                IsAdjacentToSpecialCharacter = true,
+                                SurroundingCharacter = currentChar,
+                                SurroundingCharacterLocation = new(rowId, columnId)
+                            };
+                        }
+                    }
                 }
 
-                nextColumnId++;
-                nextChar = grid[currentDigitRowId, nextColumnId];
+                return new SurroundingCheckResult
+                {
+                    IsAdjacentToSpecialCharacter = false
+                };
             }
 
-            return nextColumnId;
-        }
+            /// <summary>
+            /// Determine the first row or column to be checked.
+            /// </summary>
+            /// <remarks>
+            /// Will be the row above except if current row is the first one.
+            /// Will be the column before except if current column is the last one.
+            /// </remarks>
+            static int DetermineFirstRowOrColumnToCheck(int currentDigitRowId) => currentDigitRowId == 0 ? 0 : currentDigitRowId - 1;
 
-        static string ExtractNumber(char[,] grid, int currentDigitRowId, int currentDigitColumnId, int lastColumnToCheck)
-        {
-            return Enumerable.Range(currentDigitColumnId, lastColumnToCheck - currentDigitColumnId + 1)
-                .Select(columnIndex => grid[currentDigitRowId, columnIndex])
-                .Where(char.IsDigit)
-                .Aggregate(new StringBuilder(), (stringBuilder, digit) => stringBuilder.Append(digit))
-                .ToString();
-        }
+            /// <summary>
+            /// Determine the last row to be checked.
+            /// </summary>
+            /// <remarks>
+            /// Will be the row bellow except if current row is the last one.
+            /// </remarks>
+            static int DetermineLastRowToCheck(int currentDigitColumnId, int columnCount) => currentDigitColumnId == columnCount ? columnCount : currentDigitColumnId + 1;
 
-        static bool IsSpecialCharacter(char c)
-        {
-            return c != '.' && !char.IsDigit(c);
+            /// <summary>
+            /// Determine the last column to be checked.
+            /// </summary>
+            /// <remarks>
+            /// Will be the column after if current column is the last one.
+            /// Otherwise, if next column is a digit, will be the last adjacent digit column.
+            /// </remarks>
+            static int DetermineLastColumnToCheck(char[,] grid, int currentDigitRowId, int currentDigitColumnId, int columnCount)
+            {
+                // The next or current column
+                int nextColumnId = currentDigitColumnId == columnCount ? columnCount : currentDigitColumnId + 1;
+
+                // Find digit chain last column, if any
+                char nextChar = grid[currentDigitRowId, nextColumnId];
+                while (char.IsDigit(nextChar))
+                {
+                    if (nextColumnId == columnCount)
+                    {
+                        break;
+                    }
+
+                    nextColumnId++;
+                    nextChar = grid[currentDigitRowId, nextColumnId];
+                }
+
+                return nextColumnId;
+            }
+
+            static string ExtractNumber(char[,] grid, int currentDigitRowId, int currentDigitColumnId, int lastColumnToCheck)
+            {
+                return Enumerable.Range(currentDigitColumnId, lastColumnToCheck - currentDigitColumnId + 1)
+                    .Select(columnIndex => grid[currentDigitRowId, columnIndex])
+                    .Where(char.IsDigit)
+                    .Aggregate(new StringBuilder(), (stringBuilder, digit) => stringBuilder.Append(digit))
+                    .ToString();
+            }
+
+            static bool IsSpecialCharacter(char c)
+            {
+                return c != '.' && !char.IsDigit(c);
+            }
         }
     }
 }
@@ -181,8 +180,8 @@ public class Solver : Solver<char[,], int>
 public class SurroundingCheckResult
 {
     public int Number { get; set; }
-    public bool IsAdjacentToSpecialCharacter { get; set; }
     public int LastDigitColumnId { get; set; }
+    public bool IsAdjacentToSpecialCharacter { get; set; }
     public char SurroundingCharacter { get; set; }
     public Point SurroundingCharacterLocation { get; set; }
 }

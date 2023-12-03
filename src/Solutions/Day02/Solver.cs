@@ -9,9 +9,7 @@ public class Solver : Solver<List<CubeConundrum>, int>
     private const int MAX_GREEN_CUBES = 13;
     private const int MAX_BLUE_CUBES = 14;
 
-    public Solver() : base("./input.txt")
-    {
-    }
+    public Solver() : base("./input.txt") { }
 
     public override int PartOne(List<CubeConundrum> games)
     {
