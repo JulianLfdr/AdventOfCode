@@ -24,7 +24,7 @@ public class Solver : Solver<List<CubeConundrum>, int>
 
     public override int PartTwo(List<CubeConundrum> games)
     {
-        return games.Select(g => 
+        return games.Select(g =>
             g.Rounds.Max(r => r.RedCubeCount) * g.Rounds.Max(r => r.GreenCubeCount) * g.Rounds.Max(r => r.BlueCubeCount)
         ).Sum();
     }
