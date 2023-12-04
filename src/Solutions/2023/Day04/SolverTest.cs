@@ -26,7 +26,7 @@ public class SolverTest : TestEngine<Solver, List<Scratchcard>, int>
             ],
             Result = 13
         },
-        Solution = 0
+        Solution = 25010
     };
 
     public override Puzzle PartTwo => new()

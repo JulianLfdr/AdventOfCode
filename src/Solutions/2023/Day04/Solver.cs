@@ -8,18 +8,18 @@ public class Solver : Solver<List<Scratchcard>, int>
 
     public override int PartOne(List<Scratchcard> scratchcards)
     {
-        return scratchcards.Select(sc =>
+        return GetTotalPoints(scratchcards);
+
+        static int GetTotalPoints(IEnumerable<Scratchcard> scratchcards)
         {
-            int result = 0;
-
-            int matchCount = sc.ScratchedNumbers.Count(sn => sc.WinningNumbers.Contains(sn));
-            for (int i = matchCount; i >= 1; i--)
-            {
-                result *= i;
-            }
-
-            return result;
-        }).Sum();
+            return scratchcards
+                .Where(sc => sc.ScratchedNumbers.Any(sn => sc.WinningNumbers.Contains(sn)))
+                .Select(sc =>
+                {
+                    int matchCount = sc.ScratchedNumbers.Count(sn => sc.WinningNumbers.Contains(sn));
+                    return Enumerable.Range(0, matchCount - 1).Aggregate(1, (current, _) => current * 2);
+                }).Sum();
+        }
     }
 
     public override int PartTwo(List<Scratchcard> scratchcards)
@@ -42,7 +42,12 @@ public class Solver : Solver<List<Scratchcard>, int>
 
         static List<int> ExtractNumbers(string input)
         {
-            return input.Replace("  ", " ").Split(" ").Select(number => int.Parse(number)!).ToList();
+            return input
+                .Replace("  ", " ")
+                .Trim()
+                .Split(" ")
+                .Select(number => int.Parse(number)!)
+                .ToList();
         }
     }
 }
