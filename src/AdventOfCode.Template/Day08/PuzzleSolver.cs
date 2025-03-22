@@ -1,4 +1,4 @@
-﻿8namespace AdventOfCode.YearXXXX.Day08;
+﻿namespace AdventOfCode.YearXXXX.Day08;
 
 public sealed class PuzzleSolver : PuzzleSolver<int, int>
 {
