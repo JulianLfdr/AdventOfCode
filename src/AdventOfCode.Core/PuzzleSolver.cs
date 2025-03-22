@@ -34,7 +34,7 @@ public abstract class PuzzleSolver<TInput, TResult>
         var result = ParseInput(input);
 
         // Assert
-        result.ShouldBeEquivalentTo(PartOne.Example.Input);
+        result.Should().BeEquivalentTo(PartOne.Example.Input);
     }
 
     [Fact(DisplayName = "1.2 - Example")]
@@ -47,7 +47,7 @@ public abstract class PuzzleSolver<TInput, TResult>
         var result = SolvePartOne(input);
 
         // Assert
-        result.ShouldBe(PartOne.Example.Result);
+        result.Should().Be(PartOne.Example.Result);
     }
 
     [Fact(DisplayName = "1.3 - Solution")]
@@ -60,7 +60,7 @@ public abstract class PuzzleSolver<TInput, TResult>
         var result = SolvePartOne(input.Value);
 
         // Assert
-        result.ShouldBe(PartOne.Solution);
+        result.Should().Be(PartOne.Solution);
     }
     #endregion
 
@@ -75,7 +75,7 @@ public abstract class PuzzleSolver<TInput, TResult>
         var result = ParseInput(input);
 
         // Assert
-        result.ShouldBeEquivalentTo(PartTwo.Example.Input);
+        result.Should().BeEquivalentTo(PartTwo.Example.Input);
     }
 
     [Fact(DisplayName = "2.2 - Example")]
@@ -88,7 +88,7 @@ public abstract class PuzzleSolver<TInput, TResult>
         var result = SolvePartTwo(input);
 
         // Assert
-        result.ShouldBe(PartTwo.Example.Result);
+        result.Should().Be(PartTwo.Example.Result);
     }
 
     [Fact(DisplayName = "2.3 - Solution")]
@@ -101,7 +101,7 @@ public abstract class PuzzleSolver<TInput, TResult>
         var result = SolvePartTwo(input.Value);
 
         // Assert
-        result.ShouldBe(PartTwo.Solution);
+        result.Should().Be(PartTwo.Solution);
     }
     #endregion
 }
