@@ -34,6 +34,7 @@ public sealed partial class PuzzleSolver : PuzzleSolver<LocationIdLists, int>
     ///
     /// - Sorting each list: O(n log n) as it's a sorting algorithm.
     /// - Zipping and summing distances: O(n) as it involves a single pass through the list.
+    /// - Overall complexity: O(n log n) due to the sorting step dominating the time complexity.
     /// </remarks>
     protected override int SolvePartOne(LocationIdLists input)
     {
@@ -51,6 +52,7 @@ public sealed partial class PuzzleSolver : PuzzleSolver<LocationIdLists, int>
     }
 
 #pragma warning disable S1144, CA1822
+    /// Just a different way to solve the problem but with the same complexity
     private int SolvePartOneV2(LocationIdLists input)
     {
         var totalDistance = 0;

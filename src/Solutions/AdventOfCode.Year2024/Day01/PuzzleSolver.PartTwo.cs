@@ -32,8 +32,9 @@ public sealed partial class PuzzleSolver : PuzzleSolver<LocationIdLists, int>
     ///
     /// n and m are the lengths of the two lists.
     ///
-    /// - Building the count dictionary: O(m)
-    /// - Iterating and calculating the score: O(n)
+    /// - Building the count dictionary: O(m) as it involves iterating over the second list.
+    /// - Iterating and calculating the score: O(n) as it involves iterating over the first list.
+    /// - Overall complexity: O(n + m) due to the linear operations on both lists.
     /// </remarks>
     protected override int SolvePartTwo(LocationIdLists input)
     {
@@ -61,6 +62,7 @@ public sealed partial class PuzzleSolver : PuzzleSolver<LocationIdLists, int>
     /// n and m are the lengths of the two lists.
     ///
     /// - Counting occurrences for each element: O(n × m) as an operation on ListB is performed for each element in ListA.
+    /// - Overall complexity: O(n × m) due to the nested iteration over both lists.
     /// </remarks>
     private int SolvePartTwoV1(LocationIdLists input)
     {
