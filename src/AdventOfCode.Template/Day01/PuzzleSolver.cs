@@ -2,10 +2,9 @@
 
 public sealed partial class PuzzleSolver : PuzzleSolver<int, int>
 {
-    protected override Puzzle<int, int> PartOne
-        => throw new NotImplementedException();
+    public PuzzleSolver() : base(AdventOfCodeConstants.Days.Day01) { }
 
-    protected override int SolvePartOne(int input)
+    protected override int ParseInput(IEnumerable<string> puzzleInput)
     {
         throw new NotImplementedException();
     }

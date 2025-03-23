@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.Year2024.Day06;
 
-public sealed partial class PuzzleSolver : PuzzleSolver<int, int>
+public sealed partial class PuzzleSolver
 {
     protected override Puzzle<int, int> PartOne
         => throw new NotImplementedException();
